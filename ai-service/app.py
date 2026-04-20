@@ -92,7 +92,7 @@ async def ask_question(request: QueryRequest):
     try:
         # 🔥 Groq LLM call
         response = client.chat.completions.create(
-           model="llama3-8b-8192"
+           model="llama3-8b-8192",
             messages=[
                 {
                     "role": "system",
