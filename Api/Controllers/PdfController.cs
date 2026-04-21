@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Application.DTOs;
 
 namespace Api.Controllers;
 
@@ -17,7 +18,7 @@ public class PdfController : ControllerBase
         _aiService = aiService;
     }
 
-    // 🔹 Only upload (old)
+    // 🔹 Upload only
     [HttpPost("upload")]
     public async Task<IActionResult> Upload(IFormFile file)
     {
@@ -31,7 +32,7 @@ public class PdfController : ControllerBase
         return Ok(new { filePath = path });
     }
 
-    // 🔥 NEW: Upload + AI processing
+    //  Upload + AI processing
     [HttpPost("process")]
     public async Task<IActionResult> Process(IFormFile file)
     {
@@ -45,6 +46,18 @@ public class PdfController : ControllerBase
 
         // 2. Send to Python AI
         var result = await _aiService.ProcessPdfAsync(path);
+
+        return Ok(result);
+    }
+
+    // 🔥 Ask question (RAG + LLM)
+    [HttpPost("ask")]
+    public async Task<IActionResult> Ask([FromBody] AskRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Question))
+            return BadRequest("Question is required");
+
+        var result = await _aiService.AskQuestionAsync(request.Question);
 
         return Ok(result);
     }

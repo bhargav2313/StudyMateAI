@@ -2,29 +2,41 @@ using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 Swagger add cheyyali (IMPORTANT 🔥)
+// 🔹 Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 🔹 Register services
+// 🔹 Services
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddHttpClient<AiService>();
 
 // 🔹 Controllers
 builder.Services.AddControllers();
 
+// 🔥 CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
-// 🔹 Swagger enable
+// 🔹 Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 🔹 Controllers map
-app.MapControllers();
-
+// 🔥 VERY IMPORTANT ORDER
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");   // ✅ AFTER HTTPS
+
+app.MapControllers();     // ✅ AFTER CORS
 
 app.Run();

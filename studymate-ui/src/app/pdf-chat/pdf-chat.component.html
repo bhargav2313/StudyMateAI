@@ -1,0 +1,38 @@
+<div class="container">
+  <h1>📚 StudyMate AI</h1>
+
+  <!-- Upload -->
+  <div class="card">
+    <input type="file" (change)="onFileSelected($event)" />
+    <button (click)="upload()">Upload PDF</button>
+  </div>
+
+  <!-- Chat -->
+  <div class="card">
+    
+    <div class="chat-box">
+
+      <div *ngFor="let chat of chatHistory">
+        <div class="user-msg">
+          {{ chat.question }}
+        </div>
+
+        <div class="bot-msg">
+          {{ chat.answer }}
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="bot-msg">
+        Thinking...
+      </div>
+
+    </div>
+
+    <div class="ask-box">
+      <input [(ngModel)]="question" placeholder="Ask something..." />
+      <button (click)="ask()">Send</button>
+    </div>
+
+  </div>
+</div>
